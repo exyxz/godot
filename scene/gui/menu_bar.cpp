@@ -128,10 +128,11 @@ void MenuBar::_open_popup(int p_index, bool p_focus_item) {
 		return;
 	}
 
+	float content_scale_factor = pm->is_embedded() ? 1.0f : get_window()->get_content_scale_factor();
+	Size2 scale = get_canvas_transform().get_scale() * content_scale_factor;
 	Rect2 item_rect = _get_menu_item_rect(p_index);
-	Size2 canvas_scale = get_canvas_transform().get_scale();
-	Point2 screen_pos = get_screen_position() + item_rect.position * canvas_scale;
-	Size2 screen_size = item_rect.size * canvas_scale;
+	Point2 screen_pos = get_screen_position() + item_rect.position * scale;
+	Size2 screen_size = item_rect.size * scale;
 
 	active_menu = p_index;
 
