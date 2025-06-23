@@ -454,6 +454,9 @@ void Material3D::_update_shader() {
 		case DIFFUSE_TOON:
 			code += ",diffuse_toon";
 			break;
+		case DIFFUSE_DISABLED:
+			code += ",diffuse_disabled";
+			break;
 	}
 	switch (specular_mode) {
 		case SPECULAR_SCHLICK_GGX:
@@ -2126,7 +2129,7 @@ void Material3D::_bind_methods() {
 	ADD_PROPERTYI(PropertyInfo(Variant::BOOL, "vertex_color_is_srgb"), "set_flag", "get_flag", FLAG_SRGB_VERTEX_COLOR);
 
 	ADD_GROUP("Parameters", "params_");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "params_diffuse_mode", PROPERTY_HINT_ENUM, "Burley,Lambert,Lambert Wrap,Oren Nayar,Toon"), "set_diffuse_mode", "get_diffuse_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "params_diffuse_mode", PROPERTY_HINT_ENUM, "Burley,Lambert,Lambert Wrap,Oren Nayar,Toon,Disabled"), "set_diffuse_mode", "get_diffuse_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "params_specular_mode", PROPERTY_HINT_ENUM, "SchlickGGX,Blinn,Phong,Toon,Disabled"), "set_specular_mode", "get_specular_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "params_blend_mode", PROPERTY_HINT_ENUM, "Mix,Add,Sub,Mul"), "set_blend_mode", "get_blend_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "params_cull_mode", PROPERTY_HINT_ENUM, "Back,Front,Disabled"), "set_cull_mode", "get_cull_mode");
@@ -2331,6 +2334,7 @@ void Material3D::_bind_methods() {
 	BIND_ENUM_CONSTANT(DIFFUSE_LAMBERT_WRAP);
 	BIND_ENUM_CONSTANT(DIFFUSE_OREN_NAYAR);
 	BIND_ENUM_CONSTANT(DIFFUSE_TOON);
+	BIND_ENUM_CONSTANT(DIFFUSE_DISABLED);
 
 	BIND_ENUM_CONSTANT(SPECULAR_SCHLICK_GGX);
 	BIND_ENUM_CONSTANT(SPECULAR_BLINN);

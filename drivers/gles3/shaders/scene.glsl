@@ -197,7 +197,7 @@ void light_compute(vec3 N, vec3 L, vec3 V, vec3 light_color, float roughness, in
 
 #if defined(DIFFUSE_OREN_NAYAR)
 	vec3 diffuse_brdf_NL;
-#else
+#elif !defined(DIFFUSE_DISABLED)
 	float diffuse_brdf_NL; // BRDF times N.L for calculating diffuse radiance
 #endif
 
@@ -220,12 +220,16 @@ void light_compute(vec3 N, vec3 L, vec3 V, vec3 light_color, float roughness, in
 
 		diffuse_brdf_NL = cNdotL * (A + vec3(B) * s / t) * (1.0 / M_PI);
 	}
-#else
+#elif !defined(DIFFUSE_DISABLED)
 	// lambert by default for everything else
 	diffuse_brdf_NL = cNdotL * (1.0 / M_PI);
 #endif
 
+if defined(DIFFUSE_DISABLED)
+	diffuse += light_color;
+#else
 	diffuse += light_color * diffuse_brdf_NL;
+#endif
 
 	if (roughness > 0.0) {
 		// D
@@ -1116,7 +1120,7 @@ LIGHT_SHADER_CODE
 	if (metallic < 1.0) {
 #if defined(DIFFUSE_OREN_NAYAR)
 		vec3 diffuse_brdf_NL;
-#else
+#elif !defined(DIFFUSE_DISABLED)
 		float diffuse_brdf_NL; // BRDF times N.L for calculating diffuse radiance
 #endif
 
@@ -1162,15 +1166,23 @@ LIGHT_SHADER_CODE
 			diffuse_brdf_NL = lightScatter * viewScatter * energyFactor;
 			*/
 		}
-#else
+#elif !defined(DIFFUSE_DISABLED)
 		// lambert
 		diffuse_brdf_NL = cNdotL * (1.0 / M_PI);
 #endif
 
+#if defined(DIFFUSE_DISABLED)
+		diffuse_light += light_color * diffuse_color * attenuation;
+#else
 		diffuse_light += light_color * diffuse_color * diffuse_brdf_NL * attenuation;
+#endif
 
 #if defined(TRANSMISSION_USED)
+#if defined(DIFFUSE_DISABLED)
+		diffuse_light += light_color * diffuse_color * transmission * attenuation;
+#else
 		diffuse_light += light_color * diffuse_color * (vec3(1.0 / M_PI) - diffuse_brdf_NL) * transmission * attenuation;
+#endif
 #endif
 
 #if defined(LIGHT_USE_RIM)

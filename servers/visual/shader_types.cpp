@@ -190,6 +190,7 @@ ShaderTypes::ShaderTypes() {
 	shader_modes[VS::SHADER_SPATIAL].modes.push_back("diffuse_oren_nayar");
 	shader_modes[VS::SHADER_SPATIAL].modes.push_back("diffuse_burley");
 	shader_modes[VS::SHADER_SPATIAL].modes.push_back("diffuse_toon");
+	shader_modes[VS::SHADER_SPATIAL].modes.push_back("diffuse_disabled");
 
 	shader_modes[VS::SHADER_SPATIAL].modes.push_back("specular_schlick_ggx");
 	shader_modes[VS::SHADER_SPATIAL].modes.push_back("specular_blinn");

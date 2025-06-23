@@ -1234,6 +1234,7 @@ ShaderCompilerGLES2::ShaderCompilerGLES2() {
 	actions[VS::SHADER_SPATIAL].render_mode_defines["diffuse_oren_nayar"] = "#define DIFFUSE_OREN_NAYAR\n";
 	actions[VS::SHADER_SPATIAL].render_mode_defines["diffuse_lambert_wrap"] = "#define DIFFUSE_LAMBERT_WRAP\n";
 	actions[VS::SHADER_SPATIAL].render_mode_defines["diffuse_toon"] = "#define DIFFUSE_TOON\n";
+	actions[VS::SHADER_SPATIAL].render_mode_defines["diffuse_disabled"] = "#define DIFFUSE_DISABLED\n";
 
 	bool force_blinn = GLOBAL_GET_CACHED(bool, "rendering/quality/shading/force_blinn_over_ggx");
 

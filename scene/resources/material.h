@@ -202,6 +202,7 @@ public:
 		DIFFUSE_LAMBERT_WRAP,
 		DIFFUSE_OREN_NAYAR,
 		DIFFUSE_TOON,
+		DIFFUSE_DISABLED,
 	};
 
 	enum SpecularMode {
