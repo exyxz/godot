@@ -178,7 +178,9 @@ void light_compute(hvec3 N, hvec3 L, hvec3 V, half A, hvec3 light_color, bool is
 #endif // LIGHT_CLEARCOAT_USED
 
 		if (metallic < half(1.0)) {
+#if !defined(DIFFUSE_DISABLED)
 			half diffuse_brdf_NL; // BRDF times N.L for calculating diffuse radiance
+#endif
 
 #if defined(DIFFUSE_LAMBERT_WRAP)
 			// Energy conserving lambert wrap shader.
@@ -196,15 +198,23 @@ void light_compute(hvec3 N, hvec3 L, hvec3 V, half A, hvec3 light_color, bool is
 				half FdL = half(1.0) + FD90_minus_1 * SchlickFresnel(cNdotL);
 				diffuse_brdf_NL = half(1.0 / M_PI) * FdV * FdL * cNdotL;
 			}
-#else
+#elif !defined(DIFFUSE_DISABLED)
 			// lambert
 			diffuse_brdf_NL = cNdotL * half(1.0 / M_PI);
 #endif
 
+#if defined(DIFFUSE_DISABLED)
+			diffuse_light += light_color * attenuation;
+#else
 			diffuse_light += light_color * diffuse_brdf_NL * attenuation;
+#endif
 
 #if defined(LIGHT_BACKLIGHT_USED)
+#if defined(DIFFUSE_DISABLED)
+			diffuse_light += light_color * backlight * attenuation;
+#else
 			diffuse_light += light_color * (hvec3(1.0 / M_PI) - diffuse_brdf_NL) * backlight * attenuation;
+#endif
 #endif
 		}
 

@@ -359,12 +359,16 @@ void light_compute(vec3 N, vec3 L, vec3 V, vec3 light_color, bool is_directional
 	// Energy conserving lambert wrap shader.
 	// https://web.archive.org/web/20210228210901/http://blog.stevemcauley.com/2011/12/03/energy-conserving-wrapped-diffuse/
 	float diffuse_brdf_NL = max(0.0, (cNdotL + roughness) / ((1.0 + roughness) * (1.0 + roughness))) * (1.0 / M_PI);
-#else
+#elif !defined(DIFFUSE_DISABLED)
 	// lambert
 	float diffuse_brdf_NL = cNdotL * (1.0 / M_PI);
 #endif
 
+#if defined(DIFFUSE_DISABLED)
+	diffuse_light += light_color;
+#else
 	diffuse_light += light_color * diffuse_brdf_NL;
+#endif
 
 #if !defined(SPECULAR_DISABLED)
 	float specular_brdf_NL = 0.0;
@@ -1362,7 +1366,9 @@ void light_compute(vec3 N, vec3 L, vec3 V, float A, vec3 light_color, bool is_di
 #endif
 
 	if (metallic < 1.0) {
+#if !defined(DIFFUSE_DISABLED)
 		float diffuse_brdf_NL; // BRDF times N.L for calculating diffuse radiance
+#endif
 
 #if defined(DIFFUSE_LAMBERT_WRAP)
 		// Energy conserving lambert wrap shader.
@@ -1377,15 +1383,23 @@ void light_compute(vec3 N, vec3 L, vec3 V, float A, vec3 light_color, bool is_di
 			float FdL = 1.0 + FD90_minus_1 * SchlickFresnel(cNdotL);
 			diffuse_brdf_NL = (1.0 / M_PI) * FdV * FdL * cNdotL;
 		}
-#else
+#elif !defined(DIFFUSE_DISABLED)
 		// Lambert
 		diffuse_brdf_NL = cNdotL * (1.0 / M_PI);
 #endif
 
+#if defined(DIFFUSE_DISABLED)
+		diffuse_light += light_color * attenuation;
+#else
 		diffuse_light += light_color * diffuse_brdf_NL * attenuation;
+#endif
 
 #if defined(LIGHT_BACKLIGHT_USED)
+#if defined(DIFFUSE_DISABLED)
+		diffuse_light += light_color * backlight * attenuation;
+#else
 		diffuse_light += light_color * (vec3(1.0 / M_PI) - diffuse_brdf_NL) * backlight * attenuation;
+#endif
 #endif
 
 #if defined(LIGHT_RIM_USED)

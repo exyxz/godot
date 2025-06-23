@@ -18,12 +18,16 @@ void light_compute_vertex(hvec3 N, hvec3 L, hvec3 V, hvec3 light_color, bool is_
 	// Energy conserving lambert wrap shader.
 	// https://web.archive.org/web/20210228210901/http://blog.stevemcauley.com/2011/12/03/energy-conserving-wrapped-diffuse/
 	half diffuse_brdf_NL = max(half(0.0), (cNdotL + roughness) / ((half(1.0) + roughness) * (half(1.0) + roughness))) * half(1.0 / M_PI);
-#else
+#elif !defined(DIFFUSE_DISABLED)
 	// lambert
 	half diffuse_brdf_NL = cNdotL * half(1.0 / M_PI);
 #endif
 
+#if defined(DIFFUSE_DISABLED)
+	diffuse_light += light_color;
+#else
 	diffuse_light += light_color * diffuse_brdf_NL;
+#endif
 
 #if !defined(SPECULAR_DISABLED)
 	half specular_brdf_NL = half(0.0);
